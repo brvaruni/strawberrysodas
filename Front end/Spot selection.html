@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parking Lot Booking</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  header {
+    background-color: #1976d2;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    font-size: 24px;
+  }
+  main {
+    padding: 20px;
+  }
+  .parking-spot {
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+    border-radius: 8px;
+    text-align: center;
+    line-height: 100px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .booked {
+    background-color: #ccc;
+    color: #fff;
+  }
+  .available {
+    background-color: #4caf50;
+    color: #fff;
+  }
+  .selected {
+    background-color: #1976d2 !important;
+    color: #fff !important;
+  }
+  .book-btn {
+    background-color: #1976d2;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .book-btn:hover {
+    background-color: #1565c0;
+  }
+</style>
+</head>
+<body>
+<header>Parking Lot Booking</header>
+<main>
+  <div>
+    <span>Select a parking spot:</span><br><br>
+    <div class="parking-spots">
+      <!-- Example spots -->
+      <div class="parking-spot booked" data-spot="1" data-time="0" onclick="selectSpot(1)">Spot 1</div>
+      <div class="parking-spot available" data-spot="2" data-time="0" onclick="selectSpot(2)">Spot 2</div>
+      <div class="parking-spot booked" data-spot="3" data-time="0" onclick="selectSpot(3)">Spot 3</div>
+      <div class="parking-spot available" data-spot="4" data-time="0" onclick="selectSpot(4)">Spot 4</div>
+      <!-- Add more spots here -->
+    </div>
+  </div>
+  <br>
+  <button class="book-btn" onclick="bookSelectedSpot()" id="bookBtn" disabled>Book Selected Spot</button>
+</main>
+
+<script>
+  let selectedSpot = null;
+
+  function selectSpot(spotNumber) {
+    const spot = document.querySelector(`.parking-spot[data-spot='${spotNumber}']`);
+    const currentTime = new Date().getTime();
+    const bookedTime = parseInt(spot.getAttribute('data-time'));
+    if (bookedTime === 0 || (currentTime - bookedTime) > (15 * 60 * 1000)) {
+      if (selectedSpot) {
+        selectedSpot.classList.remove('selected');
+      }
+      spot.classList.add('selected');
+      selectedSpot = spot;
+      document.getElementById('bookBtn').removeAttribute('disabled');
+    } else {
+      alert('You can only book a spot for more than 15 minutes.');
+    }
+  }
+
+  function bookSelectedSpot() {
+    if (selectedSpot) {
+      const spotNumber = selectedSpot.getAttribute('data-spot');
+      alert(`You have booked Spot ${spotNumber}`);
+      selectedSpot.classList.remove('available');
+      selectedSpot.classList.add('booked');
+      selectedSpot.setAttribute('data-time', new Date().getTime());
+      selectedSpot = null;
+      document.getElementById('bookBtn').setAttribute('disabled', 'disabled');
+    } else {
+      alert('Please select a parking spot before booking.');
+    }
+  }
+</script>
+</body>
+</html>

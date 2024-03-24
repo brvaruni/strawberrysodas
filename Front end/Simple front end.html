@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eazy Park - Parking Lot Booking System</title>
+    <style>
+        /* Styles for parking spots */
+        .parking-spot {
+            width: 50px;
+            height: 50px;
+            margin: 5px;
+            display: inline-block;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+        .empty-spot {
+            background-color: green;
+        }
+
+        .booked-spot {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Eazy Park - Parking Lot Booking System</h1>
+
+    <div id="booking-form">
+        <h2>Book Your Parking Spot</h2>
+        <form id="parking-form">
+            <label for="first-name">First Name:</label>
+            <input type="text" id="first-name" required><br><br>
+            
+            <label for="last-name">Last Name:</label>
+            <input type="text" id="last-name" required><br><br>
+
+            <label for="mobile-number">Mobile Number:</label>
+            <input type="tel" id="mobile-number" required pattern="[0-9]{10}"><br><br>
+
+            <label for="plate-number">Plate Number:</label>
+            <input type="text" id="plate-number" required><br><br>
+
+            <label for="entry-time">Entry Time:</label>
+            <input type="time" id="entry-time" required><br><br>
+
+            <label for="exit-time">Exit Time:</label>
+            <input type="time" id="exit-time" required><br><br>
+
+            <button type="submit">Book Parking Spot</button>
+        </form>
+    </div>
+
+    <div id="parking-lot">
+        <h2>Parking Lot</h2>
+        <div id="spots"></div>
+    </div>
+
+    <div id="confirmation" style="display: none;">
+        <h2>Slot Confirmed!</h2>
+        <input type="checkbox" id="confirmation-checkbox"> I agree to the terms and conditions.<br><br>
+    </div>
+
+    <script>
+        const spots = []; // Array to store parking spots status (empty/booked)
+        const numSpots = 10; // Total number of parking spots
+
+        // Initialize parking spots
+        for (let i = 0; i < numSpots; i++) {
+            spots.push(false); // false represents an empty spot
+        }
+
+        const spotsContainer = document.getElementById('spots');
+
+        // Render parking spots
+        for (let i = 0; i < numSpots; i++) {
+            const spot = document.createElement('div');
+            spot.className = 'parking-spot empty-spot';
+            spot.dataset.spotId = i;
+            spot.addEventListener('click', () => bookSpot(i));
+            spotsContainer.appendChild(spot);
+        }
+
+        function bookSpot(spotId) {
+            if (!spots[spotId]) {
+                // Empty spot, book it
+                spots[spotId] = true;
+                spotsContainer.children[spotId].classList.remove('empty-spot');
+                spotsContainer.children[spotId].classList.add('booked-spot');
+
+                // Automatically fill the form with selected spot number
+                document.getElementById('plate-number').value = '';
+                document.getElementById('entry-time').value = '';
+                document.getElementById('exit-time').value = '';
+            } else {
+                // Spot already booked
+                alert('This spot is already booked!');
+            }
+        }
+
+        document.getElementById('parking-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Check if at least one spot is booked
+            if (!spots.includes(true)) {
+                alert('Please select a parking spot first!');
+                return;
+            }
+
+            // Check if all form fields are filled
+            const firstName = document.getElementById('first-name').value.trim();
+            const lastName = document.getElementById('last-name').value.trim();
+            const mobileNumber = document.getElementById('mobile-number').value.trim();
+            const plateNumber = document.getElementById('plate-number').value.trim();
+            const entryTime = document.getElementById('entry-time').value.trim();
+            const exitTime = document.getElementById('exit-time').value.trim();
+
+            if (!firstName || !lastName || !mobileNumber || !plateNumber || !entryTime || !exitTime) {
+                alert('Please fill out all the fields!');
+                return;
+            }
+
+            // Show confirmation page
+            document.getElementById('booking-form').style.display = 'none';
+            document.getElementById('parking-lot').style.display = 'none';
+            document.getElementById('confirmation').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
